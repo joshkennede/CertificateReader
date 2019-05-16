@@ -7,11 +7,8 @@ namespace CertificateReader
     {
         public static void Main()
         {
-            string certificatePath = CertificateUtility.LoadCertificateFromFile();
-            X509Certificate certificate = CertificateUtility.CreateCertificateFromFile(certificatePath);
-
-            MenuChoice optionSelected = CertificateUtility.GetMenuChoice(certificate);
-            Tuple<bool, string> result = CertificateUtility.ProcessMenuChoice(optionSelected, certificate);
+            MenuChoice optionSelected = CertificateUtility.GetMenuChoice();           
+            Tuple<bool, string> result = CertificateUtility.ProcessMenuChoice(optionSelected);
 
             CertificateUtility.ProcessResult(result);
             CertificateUtility.ProcessAnotherCertificate();

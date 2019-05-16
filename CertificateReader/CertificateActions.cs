@@ -8,58 +8,150 @@ namespace CertificateReader
 {
     public class CertificateActions
     {
-        internal static void GetRawCertificateData(X509Certificate certificate)
+        internal static Tuple<bool, string> GetRawCertificateData()
         {
+            bool isSuccessful = false;
+            string messageResult = string.Empty;
+
+            string certificatePath = CertificateUtility.LoadCertificateFromFile();
+            X509Certificate certificate = CertificateUtility.CreateCertificateFromFile(certificatePath);
             byte[] results = certificate.GetRawCertData();
 
+            if (results != null)
+            {
+                isSuccessful = true;
+                messageResult = "The raw certificate was retrieved";
+            }
+
             foreach (byte b in results)
             {
                 Console.Write(b);
             }
+
+            return new Tuple<bool, string>(isSuccessful, messageResult);
         }
 
-        internal static void GetRawCertificateString(X509Certificate certificate)
+        internal static Tuple<bool, string> GetRawCertificateString()
         {
+            bool isSuccessful = false;
+            string messageResult = string.Empty;
+
+            string certificatePath = CertificateUtility.LoadCertificateFromFile();
+            X509Certificate certificate = CertificateUtility.CreateCertificateFromFile(certificatePath);
             string result = certificate.GetRawCertDataString();
+
+            if (result != null)
+            {
+                messageResult = "The raw certificate string was retrieved";
+                isSuccessful = true;
+            }
+
             Console.WriteLine(result);
+
+            return new Tuple<bool, string>(isSuccessful, messageResult);
         }
 
-        internal static void GetCertificateHash(X509Certificate certificate)
+        internal static Tuple<bool, string> GetCertificateHash()
         {
+            bool isSuccessful = false;
+            string messageResult = string.Empty;
+
+            string certificatePath = CertificateUtility.LoadCertificateFromFile();
+            X509Certificate certificate = CertificateUtility.CreateCertificateFromFile(certificatePath);
             byte[] results = certificate.GetCertHash();
 
+            if (results != null)
+            {
+                isSuccessful = true;
+                messageResult = "The raw certificate hash value was retrieved";
+            }
+
             foreach (byte b in results)
             {
                 Console.Write(b);
             }
+
+            return new Tuple<bool, string>(isSuccessful, messageResult);
         }
 
-        internal static void GetCertificateHashString(X509Certificate certificate)
+        internal static Tuple<bool, string> GetCertificateHashString()
         {
+            bool isSuccessful = false;
+            string messageResult = string.Empty;
+
+            string certificatePath = CertificateUtility.LoadCertificateFromFile();
+            X509Certificate certificate = CertificateUtility.CreateCertificateFromFile(certificatePath);
             string result = certificate.GetCertHashString();
+
+            if (result != null)
+            {
+                messageResult = "The raw certificate hash string was retrieved";
+                isSuccessful = true;
+            }
+
             Console.WriteLine(result);
+
+            return new Tuple<bool, string>(isSuccessful, messageResult);
         }
 
-        internal static void GetCertificateHashCode(X509Certificate certificate)
+        internal static Tuple<bool, string> GetCertificateHashCode()
         {
-            int results = certificate.GetHashCode();
-            Console.WriteLine(results);
+            bool isSuccessful = false;
+            string messageResult = string.Empty;
+
+            string certificatePath = CertificateUtility.LoadCertificateFromFile();
+            X509Certificate certificate = CertificateUtility.CreateCertificateFromFile(certificatePath);
+            int result = certificate.GetHashCode();
+
+            if (result < 0 || result > 0)
+            {
+                isSuccessful = true;
+                messageResult = "The raw certificate hash code was retrieved";
+            }
+
+            Console.WriteLine(result);
+
+            return new Tuple<bool, string>(isSuccessful, messageResult);
         }
 
-        internal static void ExportToByteArray(X509Certificate certificate)
+        internal static Tuple<bool, string> ExportToByteArray()
         {
+            bool isSuccessful = false;
+            string messageResult = string.Empty;
+
+            string certificatePath = CertificateUtility.LoadCertificateFromFile();
+            X509Certificate certificate = CertificateUtility.CreateCertificateFromFile(certificatePath);
             var stringbuilder = new StringBuilder();
             stringbuilder.AppendLine("------BEGIN CERTIFICATE------");
             stringbuilder.AppendLine(Convert.ToBase64String(certificate.Export(X509ContentType.Cert), Base64FormattingOptions.InsertLineBreaks));
             stringbuilder.AppendLine("------END   CERTIFICATE------");
 
+            if (stringbuilder != null)
+            {
+                isSuccessful = true;
+                messageResult = "The certificate was exported to a byte array";
+            }
+
             Console.WriteLine(stringbuilder.ToString());
+
+            return new Tuple<bool, string>(isSuccessful, messageResult);
         }
 
-        internal static void ConvertCertificateByteArrayToHexString(X509Certificate certificate)
+        internal static Tuple<bool, string> ConvertCertificateByteArrayToHexString()
         {
+            bool isSuccessful = false;
+            string messageResult = string.Empty;
+
+            string certificatePath = CertificateUtility.LoadCertificateFromFile();
+            X509Certificate certificate = CertificateUtility.CreateCertificateFromFile(certificatePath);
             byte[] rawCertData = certificate.GetRawCertData();
             var hex = new StringBuilder(rawCertData.Length * 2);
+
+            if (rawCertData != null)
+            {
+                isSuccessful = true;
+                messageResult = "The certificate was converted from a byte array to a string";
+            }
 
             foreach (byte b in rawCertData)
             {
@@ -67,18 +159,35 @@ namespace CertificateReader
             }
 
             Console.WriteLine(hex.ToString());
+
+            return new Tuple<bool, string>(isSuccessful, messageResult);
         }
 
-        internal static void ConvertCertificateToHex(X509Certificate certificate)
+        internal static Tuple<bool, string> ConvertCertificateToHex()
         {
+            bool isSuccessful = false;
+            string messageResult = string.Empty;
+
+            string certificatePath = CertificateUtility.LoadCertificateFromFile();
+            X509Certificate certificate = CertificateUtility.CreateCertificateFromFile(certificatePath);
             byte[] rawCertData = certificate.GetRawCertData();
             string hex = BitConverter.ToString(rawCertData);
 
+            if (rawCertData != null)
+            {
+                isSuccessful = true;
+                messageResult = "The raw certificate was converted to hexidecimal format";
+            }
+
             Console.WriteLine(hex);
+
+            return new Tuple<bool, string>(isSuccessful, messageResult);
         }
 
-        internal static bool GetCertificateFromStore()
+        internal static Tuple<bool, string> GetCertificateFromStore()
         {
+            bool isSuccessful = false;
+            string messageResult = string.Empty;
             bool isFound;
             var store = new X509Store(StoreLocation.CurrentUser);
             Console.WriteLine("Enter thumbprint: ");
@@ -92,7 +201,7 @@ namespace CertificateReader
 
                 X509Certificate2Collection certificate2Collection = store.Certificates;
                 X509Certificate2Collection currentCerts = certificate2Collection.Find(X509FindType.FindByThumbprint, thumbPrint, false);
-                X509Certificate2Collection signingCerts = currentCerts.Find(X509FindType.FindBySubjectDistinguishedName, certName, false);
+                X509Certificate2Collection signingCerts = currentCerts.Find(X509FindType.FindBySubjectName, certName, false);
 
                 if (signingCerts.Count == 0)
                 {
@@ -103,20 +212,26 @@ namespace CertificateReader
                 else
                 {
                     isFound = true;
+                    isSuccessful = isFound;
+                    messageResult = isFound == true ? "The certificate was retrieved from local store" : "The certificate could not be retrieved from local store";
                     Console.WriteLine(signingCerts[0].GetRawCertDataString());
                 }
-
-                return isFound;
             }
             finally
             {
                 store.Close();
             }
+
+            return new Tuple<bool, string>(isSuccessful, messageResult);
         }
 
-        internal static int InsertRawCertificateBinaryToDatabase(X509Certificate certificate)
+        internal static Tuple<bool, string> InsertRawCertificateBinaryToDatabase()
         {
+            bool isSuccessful = false;
             int result = 0;
+            string certificatePath = CertificateUtility.LoadCertificateFromFile();
+            X509Certificate certificate = CertificateUtility.CreateCertificateFromFile(certificatePath);
+            
             string connectionString = ConfigurationManager.ConnectionStrings["Database"].ConnectionString;
             Console.WriteLine("Connection string:");
             Console.WriteLine(connectionString);
@@ -152,7 +267,11 @@ namespace CertificateReader
                 Console.WriteLine("Command was not run");
             }
 
-            return result;
+            if (result >= 1)
+                isSuccessful = true;
+            string messageResult = $"{result} certificate was inserted into database";
+
+            return new Tuple<bool, string>(isSuccessful, messageResult);
         }
     }
 }

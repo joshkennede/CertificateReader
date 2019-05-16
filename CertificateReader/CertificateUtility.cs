@@ -22,10 +22,11 @@ namespace CertificateReader
 
         internal static string LoadCertificateFromFile()
         {
-            Console.WriteLine(@"***** CERTIFICATE READER *****");
             Console.WriteLine();
             Console.WriteLine("Enter Path to Certificate: ");
             string pathToCertificate = @"" + Console.ReadLine();
+            Console.WriteLine();
+
             return pathToCertificate;
         }
 
@@ -33,7 +34,6 @@ namespace CertificateReader
         {
             if (result.Item1 == true)
             {
-                Console.WriteLine();
                 Console.WriteLine("Certificate was processed successfully");
                 Console.WriteLine(result.Item2);
                 Console.WriteLine();
@@ -57,10 +57,8 @@ namespace CertificateReader
 
             if (confirmation.ToUpper() == "Y")
             {
-                string certificatePath = LoadCertificateFromFile();
-                var certificate = CreateCertificateFromFile(certificatePath);
-                var optionSelected = GetMenuChoice(certificate);
-                var result = ProcessMenuChoice(optionSelected, certificate);
+                var optionSelected = GetMenuChoice();                
+                var result = ProcessMenuChoice(optionSelected);
                 ProcessResult(result);
             }
             else
@@ -69,52 +67,41 @@ namespace CertificateReader
             }
         }
 
-        internal static MenuChoice GetMenuChoice(X509Certificate certificate)
+        internal static MenuChoice GetMenuChoice()
         {
-            if (certificate == null)
-            {
-                throw new ArgumentNullException(nameof(certificate));
-            }
-            else
-            {
-                Console.WriteLine();
-                Console.WriteLine(@"********************");
-                Console.WriteLine(@"***** OPTIONS ******");
-                Console.WriteLine(@"********************");
-                Console.WriteLine();
-                Console.WriteLine(@"0 - Quit");
-                Console.WriteLine();
-                Console.WriteLine(@"1 - Get Raw Cert Data");
-                Console.WriteLine(@"2 - Get Raw Cert String");
-                Console.WriteLine(@"3 - Get Cert Hash");
-                Console.WriteLine(@"4 - Get Cert Hash String");
-                Console.WriteLine(@"5 - Get Cert Hash Code");
-                Console.WriteLine(@"6 - Export To Byte Array");
-                Console.WriteLine(@"7 - Convert Cert To Hex");
-                Console.WriteLine(@"8 - Convert Cert To Hex String");
-                Console.WriteLine(@"9 - Get Cert from Store");
-                Console.WriteLine(@"10 - Insert Certificate into SQL");
-                Console.WriteLine();
-                Console.WriteLine(@"Enter selection: ");
-                string selectedOption = Console.ReadLine();
-                Console.WriteLine();
+            Console.WriteLine(@"***** CERTIFICATE READER *****");
+            Console.WriteLine();
+            Console.WriteLine(@"********************");
+            Console.WriteLine(@"***** OPTIONS ******");
+            Console.WriteLine(@"********************");
+            Console.WriteLine();
+            Console.WriteLine(@" 0 - Quit");
+            Console.WriteLine();
+            Console.WriteLine(@" 1 - Get Raw Cert Data");
+            Console.WriteLine(@" 2 - Get Raw Cert String");
+            Console.WriteLine(@" 3 - Get Cert Hash");
+            Console.WriteLine(@" 4 - Get Cert Hash String");
+            Console.WriteLine(@" 5 - Get Cert Hash Code");
+            Console.WriteLine(@" 6 - Export To Byte Array");
+            Console.WriteLine(@" 7 - Convert Cert To Hex");
+            Console.WriteLine(@" 8 - Convert Cert To Hex String");
+            Console.WriteLine(@" 9 - Get Cert from Store");
+            Console.WriteLine(@" 10 - Insert Certificate into SQL");
+            Console.WriteLine();
+            Console.WriteLine(@"Enter selection: ");
+            string selectedOption = Console.ReadLine();
 
-                if (!int.TryParse(selectedOption, out int selection))
-                {
-                    selection = -1;
-                }
-
-                return (MenuChoice)selection;
+            if (!int.TryParse(selectedOption, out int selection))
+            {
+                selection = -1;
             }
+
+            return (MenuChoice)selection;
         }
 
-        internal static Tuple<bool, string> ProcessMenuChoice(MenuChoice optionSelected, X509Certificate certificate)
+        internal static Tuple<bool, string> ProcessMenuChoice(MenuChoice optionSelected)
         {
-            if (certificate == null)
-                throw new ArgumentNullException(nameof(certificate));
-
-            bool isSuccessful = false;
-            string messageResult = string.Empty;
+            var results = new Tuple<bool, string>(false, string.Empty);
 
             try
             {
@@ -124,69 +111,48 @@ namespace CertificateReader
                         QuitMessage();
                         break;
                     case MenuChoice.RawCertData:
-                        CertificateActions.GetRawCertificateData(certificate);
-                        isSuccessful = true;
-                        messageResult = "The raw certificate was retrieved";
+                        results = CertificateActions.GetRawCertificateData();
                         break;
                     case MenuChoice.RawCertString:
-                        CertificateActions.GetRawCertificateString(certificate);
-                        messageResult = "The raw certificate string was retrieved";
-                        isSuccessful = true;
+                        results = CertificateActions.GetRawCertificateString();                        
                         break;
                     case MenuChoice.CertHash:
-                        CertificateActions.GetCertificateHash(certificate);
-                        isSuccessful = true;
-                        messageResult = "The raw certificate hash value was retrieved";
+                        results = CertificateActions.GetCertificateHash();                        
                         break;
                     case MenuChoice.CertHashString:
-                        CertificateActions.GetCertificateHashString(certificate);
-                        messageResult = "The raw certificate hash string was retrieved";
-                        isSuccessful = true;
+                        results = CertificateActions.GetCertificateHashString();                        
                         break;
                     case MenuChoice.CertHashCode:
-                        CertificateActions.GetCertificateHashCode(certificate);
-                        isSuccessful = true;
-                        messageResult = "The raw certificate hash code was retrieved";
+                        results = CertificateActions.GetCertificateHashCode();                        
                         break;
                     case MenuChoice.ExportToPEM:
-                        CertificateActions.ExportToByteArray(certificate);
-                        isSuccessful = true;
-                        messageResult = "The certificate was exported to a byte array";
+                        results = CertificateActions.ExportToByteArray();                        
                         break;
                     case MenuChoice.ConvertToHex:
-                        CertificateActions.ConvertCertificateByteArrayToHexString(certificate);
-                        isSuccessful = true;
-                        messageResult = "The certificate was converted from a byte array to a string";
+                        results = CertificateActions.ConvertCertificateByteArrayToHexString();                        
                         break;
                     case MenuChoice.ConvertToHexString:
-                        CertificateActions.ConvertCertificateToHex(certificate);
-                        isSuccessful = true;
-                        messageResult = "The raw certificate was converted to hexidecimal format";
+                        results = CertificateActions.ConvertCertificateToHex();                        
                         break;
                     case MenuChoice.CertFromStore:
-                        var isFound = CertificateActions.GetCertificateFromStore();
-                        isSuccessful = isFound;
-                        messageResult = isFound == true ? "The certificate was retrieved from local store": "The certificate could not be retrieved from local store";
+                        results = CertificateActions.GetCertificateFromStore();
                         break;
                     case MenuChoice.InsertCertIntoSQL:
-                        var result = CertificateActions.InsertRawCertificateBinaryToDatabase(certificate);
-                        if (result >= 1)
-                            isSuccessful = true;
-                        messageResult = $"{result} certificate was inserted into database";
+                        results = CertificateActions.InsertRawCertificateBinaryToDatabase();                        
                         break;
                     default:
-                        UnknownOperation();
-                        isSuccessful = false;
-                        messageResult = "The certificate was not processed because of some issue or error";
+                        results = InvalidMenuSelection();
                         break;
                 }
+
+                Console.WriteLine();
             }
             catch (CryptographicException exception)
             {
                 Console.WriteLine($"There was an error processing your request - {exception.ToString()}");
             }
 
-            return new Tuple<bool, string>(isSuccessful, messageResult);
+            return new Tuple<bool, string>(results.Item1, results.Item2);
         }
 
         internal static void QuitMessage()
@@ -194,10 +160,14 @@ namespace CertificateReader
             Console.WriteLine("Thanks for using your friendly neighborhood certificate utility.");
         }
 
-        internal static void UnknownOperation()
+        internal static Tuple<bool, string> InvalidMenuSelection()
         {
+            bool isSuccessful = false;
+            string messageResult = "The certificate was not processed because of some issue or error";
             Console.WriteLine();
             Console.WriteLine("Thats not a valid menu choice!");
+
+            return new Tuple<bool, string>(isSuccessful, messageResult);
         }
     }
 
