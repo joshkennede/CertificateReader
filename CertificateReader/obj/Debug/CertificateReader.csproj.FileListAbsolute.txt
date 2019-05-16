@@ -1,0 +1,7 @@
+C:\Users\joshuak\Source\repos\CertificateReader\CertificateReader\bin\Debug\CertificateReader.exe.config
+C:\Users\joshuak\Source\repos\CertificateReader\CertificateReader\bin\Debug\CertificateReader.exe
+C:\Users\joshuak\Source\repos\CertificateReader\CertificateReader\bin\Debug\CertificateReader.pdb
+C:\Users\joshuak\Source\repos\CertificateReader\CertificateReader\obj\Debug\CertificateReader.csprojAssemblyReference.cache
+C:\Users\joshuak\Source\repos\CertificateReader\CertificateReader\obj\Debug\CertificateReader.csproj.CoreCompileInputs.cache
+C:\Users\joshuak\Source\repos\CertificateReader\CertificateReader\obj\Debug\CertificateReader.exe
+C:\Users\joshuak\Source\repos\CertificateReader\CertificateReader\obj\Debug\CertificateReader.pdb
