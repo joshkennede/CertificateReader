@@ -1,17 +1,16 @@
 ﻿using System;
-using System.Security.Cryptography.X509Certificates;
 
-namespace CertificateReader
+namespace CertificateUtility
 {
     public class Program
     {
         public static void Main()
         {
-            MenuChoice optionSelected = CertificateUtility.GetMenuChoice();           
-            Tuple<bool, string> result = CertificateUtility.ProcessMenuChoice(optionSelected);
+            MenuChoice optionSelected = Utilities.GetMenuChoice();           
+            Tuple<bool, string> result = Utilities.ProcessMenuChoice(optionSelected);
 
-            CertificateUtility.ProcessResult(result);
-            CertificateUtility.ProcessAnotherCertificate();
+            Utilities.ProcessResult(result);
+            Utilities.ProcessAnotherCertificate();
         }
     }
 }

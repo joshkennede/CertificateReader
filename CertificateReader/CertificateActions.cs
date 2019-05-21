@@ -4,7 +4,7 @@ using System.Configuration;
 using System.Data.SqlClient;
 using System.Security.Cryptography.X509Certificates;
 
-namespace CertificateReader
+namespace CertificateUtility
 {
     public class CertificateActions
     {
@@ -13,8 +13,8 @@ namespace CertificateReader
             bool isSuccessful = false;
             string messageResult = string.Empty;
 
-            string certificatePath = CertificateUtility.LoadCertificateFromFile();
-            X509Certificate certificate = CertificateUtility.CreateCertificateFromFile(certificatePath);
+            string certificatePath = Utilities.LoadCertificateFromFile();
+            X509Certificate certificate = Utilities.CreateCertificateFromFile(certificatePath);
             byte[] results = certificate.GetRawCertData();
 
             if (results != null)
@@ -36,8 +36,8 @@ namespace CertificateReader
             bool isSuccessful = false;
             string messageResult = string.Empty;
 
-            string certificatePath = CertificateUtility.LoadCertificateFromFile();
-            X509Certificate certificate = CertificateUtility.CreateCertificateFromFile(certificatePath);
+            string certificatePath = Utilities.LoadCertificateFromFile();
+            X509Certificate certificate = Utilities.CreateCertificateFromFile(certificatePath);
             string result = certificate.GetRawCertDataString();
 
             if (result != null)
@@ -56,8 +56,8 @@ namespace CertificateReader
             bool isSuccessful = false;
             string messageResult = string.Empty;
 
-            string certificatePath = CertificateUtility.LoadCertificateFromFile();
-            X509Certificate certificate = CertificateUtility.CreateCertificateFromFile(certificatePath);
+            string certificatePath = Utilities.LoadCertificateFromFile();
+            X509Certificate certificate = Utilities.CreateCertificateFromFile(certificatePath);
             byte[] results = certificate.GetCertHash();
 
             if (results != null)
@@ -79,8 +79,8 @@ namespace CertificateReader
             bool isSuccessful = false;
             string messageResult = string.Empty;
 
-            string certificatePath = CertificateUtility.LoadCertificateFromFile();
-            X509Certificate certificate = CertificateUtility.CreateCertificateFromFile(certificatePath);
+            string certificatePath = Utilities.LoadCertificateFromFile();
+            X509Certificate certificate = Utilities.CreateCertificateFromFile(certificatePath);
             string result = certificate.GetCertHashString();
 
             if (result != null)
@@ -99,8 +99,8 @@ namespace CertificateReader
             bool isSuccessful = false;
             string messageResult = string.Empty;
 
-            string certificatePath = CertificateUtility.LoadCertificateFromFile();
-            X509Certificate certificate = CertificateUtility.CreateCertificateFromFile(certificatePath);
+            string certificatePath = Utilities.LoadCertificateFromFile();
+            X509Certificate certificate = Utilities.CreateCertificateFromFile(certificatePath);
             int result = certificate.GetHashCode();
 
             if (result < 0 || result > 0)
@@ -119,8 +119,8 @@ namespace CertificateReader
             bool isSuccessful = false;
             string messageResult = string.Empty;
 
-            string certificatePath = CertificateUtility.LoadCertificateFromFile();
-            X509Certificate certificate = CertificateUtility.CreateCertificateFromFile(certificatePath);
+            string certificatePath = Utilities.LoadCertificateFromFile();
+            X509Certificate certificate = Utilities.CreateCertificateFromFile(certificatePath);
             var stringbuilder = new StringBuilder();
             stringbuilder.AppendLine("------BEGIN CERTIFICATE------");
             stringbuilder.AppendLine(Convert.ToBase64String(certificate.Export(X509ContentType.Cert), Base64FormattingOptions.InsertLineBreaks));
@@ -142,8 +142,8 @@ namespace CertificateReader
             bool isSuccessful = false;
             string messageResult = string.Empty;
 
-            string certificatePath = CertificateUtility.LoadCertificateFromFile();
-            X509Certificate certificate = CertificateUtility.CreateCertificateFromFile(certificatePath);
+            string certificatePath = Utilities.LoadCertificateFromFile();
+            X509Certificate certificate = Utilities.CreateCertificateFromFile(certificatePath);
             byte[] rawCertData = certificate.GetRawCertData();
             var hex = new StringBuilder(rawCertData.Length * 2);
 
@@ -168,8 +168,8 @@ namespace CertificateReader
             bool isSuccessful = false;
             string messageResult = string.Empty;
 
-            string certificatePath = CertificateUtility.LoadCertificateFromFile();
-            X509Certificate certificate = CertificateUtility.CreateCertificateFromFile(certificatePath);
+            string certificatePath = Utilities.LoadCertificateFromFile();
+            X509Certificate certificate = Utilities.CreateCertificateFromFile(certificatePath);
             byte[] rawCertData = certificate.GetRawCertData();
             string hex = BitConverter.ToString(rawCertData);
 
@@ -192,7 +192,7 @@ namespace CertificateReader
             var store = new X509Store(StoreLocation.CurrentUser);
             Console.WriteLine("Enter thumbprint: ");
             string thumbPrint = Console.ReadLine();
-            Console.WriteLine("Enter certificate name (e.g. 'CN=localhost'): ");
+            Console.WriteLine("Enter certificate name (e.g. 'CN=DRS1WBVS1D.drs.wa.lcl'): ");
             string certName = Console.ReadLine();
 
             try
@@ -229,10 +229,10 @@ namespace CertificateReader
         {
             bool isSuccessful = false;
             int result = 0;
-            string certificatePath = CertificateUtility.LoadCertificateFromFile();
-            X509Certificate certificate = CertificateUtility.CreateCertificateFromFile(certificatePath);
+            string certificatePath = Utilities.LoadCertificateFromFile();
+            X509Certificate certificate = Utilities.CreateCertificateFromFile(certificatePath);
             
-            string connectionString = ConfigurationManager.ConnectionStrings["Database"].ConnectionString;
+            string connectionString = ConfigurationManager.ConnectionStrings["IdentityServer"].ConnectionString;
             Console.WriteLine("Connection string:");
             Console.WriteLine(connectionString);
             Console.WriteLine("Do you want to use this connection string? - Y/N");
@@ -240,11 +240,15 @@ namespace CertificateReader
 
             if (connectionConfirmation.ToUpper() == "Y")
             {
-                string insertCommand = @"UPDATE [Table] SET [Column] = @certificate WHERE Id = 1";
+                Console.WriteLine("Enter id to update in database:");
+                string idToInsert = Console.ReadLine();
+                Console.WriteLine($"Id To Insert: {idToInsert}");
+                string insertCommand = @"UPDATE [RelyingParties] SET [EncryptingCertificate] = @certificate WHERE Id = @Id";
                 Console.WriteLine("SQL command that will be used:");
                 Console.WriteLine(insertCommand);
                 Console.WriteLine("Do you want to use this command? - Y/N");
                 string commandConfirmation = Console.ReadLine();
+                int Id = int.Parse(idToInsert);
 
                 if (commandConfirmation.ToUpper() == "Y")
                 {
@@ -252,6 +256,7 @@ namespace CertificateReader
                     {
                         SqlCommand command = new SqlCommand(insertCommand, connection);
                         command.Parameters.AddWithValue("@certificate", certificate.GetRawCertData());
+                        command.Parameters.AddWithValue("@Id", Id);
                         connection.Open();
                         result = command.ExecuteNonQuery();
                         connection.Close();
