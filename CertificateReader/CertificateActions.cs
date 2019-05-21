@@ -192,7 +192,7 @@ namespace CertificateUtility
             var store = new X509Store(StoreLocation.CurrentUser);
             Console.WriteLine("Enter thumbprint: ");
             string thumbPrint = Console.ReadLine();
-            Console.WriteLine("Enter certificate name (e.g. 'CN=DRS1WBVS1D.drs.wa.lcl'): ");
+            Console.WriteLine("Enter certificate name (e.g. 'CN=localhost'): ");
             string certName = Console.ReadLine();
 
             try
